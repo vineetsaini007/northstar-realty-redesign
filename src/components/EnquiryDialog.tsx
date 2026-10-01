@@ -1,6 +1,7 @@
 import { Check, X } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import type { Listing } from "../data/listings";
+import useDialogFocus from "./useDialogFocus";
 
 export default function EnquiryDialog({
   listing,
@@ -13,17 +14,7 @@ export default function EnquiryDialog({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
+  const dialogRef = useDialogFocus(onClose);
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (name.trim() && email.includes("@") && message.trim()) setSent(true);
@@ -37,6 +28,7 @@ export default function EnquiryDialog({
     >
       <div
         className="enquiry-dialog"
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="enquiry-title"

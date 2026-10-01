@@ -1,6 +1,6 @@
 import { BedDouble, Check, MapPin, Ruler, X } from "lucide-react";
-import { useEffect } from "react";
 import { agents, formatPrice, type Listing } from "../data/listings";
+import useDialogFocus from "./useDialogFocus";
 
 export default function PropertyDialog({
   listing,
@@ -11,17 +11,7 @@ export default function PropertyDialog({
   onClose: () => void;
   onEnquire: () => void;
 }) {
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
+  const dialogRef = useDialogFocus(onClose);
   const agent = agents.find((person) => person.id === listing.agentId)!;
   return (
     <div
@@ -32,6 +22,7 @@ export default function PropertyDialog({
     >
       <div
         className="property-dialog"
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="property-title"
